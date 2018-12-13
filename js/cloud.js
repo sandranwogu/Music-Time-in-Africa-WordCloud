@@ -33,6 +33,66 @@
             d.padding = padding.call(this, d, i);
             return d;
           }).sort(function(a, b) { return b.size - a.size; });
+          console.log(data);
+
+          // Bar chart code
+          var maxValue = Object.values(data)[0].value;
+          // console.log(maxValue);
+
+          var margin = { top: 20, right: 20, bottom: 30, left: 60 },
+              width = 940 - margin.left - margin.right,
+              height = 500 - margin.top - margin.bottom;
+
+          var x = d3.scale.ordinal()
+                    .domain(data.map(function (d) { return d.key; }))
+                    .rangeRoundBands([0, width], 0.5);
+
+          var y = d3.scale.linear()
+                    .domain([0, d3.max(data, function (d) { return d.value; })])
+                    .range([height, 0]);
+
+          var xAxis = d3.svg.axis()
+              .scale(x)
+              .orient("bottom");
+
+          var yAxis = d3.svg.axis()
+              .scale(y)
+              .orient("left")
+              .ticks(10);
+
+          var svg = d3.select("#barchart").append("svg")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          svg.selectAll(".bar")
+              .data(data)
+              .enter().append("rect")
+              .attr("class", "bar")
+              .attr("fill", "#5b717c")
+              .attr("x", function (d) { return x(d.key); })
+              .attr("width", x.rangeBand())
+              .attr("y", function (d) { return y(d.value); })
+              .attr("height", function (d) { return height - y(d.value); })
+              .attr("opacity", "0.7");
+
+          svg.append("g")
+              .attr("class", "xaxis")
+              .attr("transform", "translate(0," + height + ")")
+              .call(xAxis)
+              .selectAll("text")
+              .style("text-anchor", "end")
+              .style("font-size", ".5em")
+              .attr("dx", "-.8em")
+              .attr("dy", "0em")
+              .attr("transform", "rotate(-45)");
+
+          svg.append("g")
+              .attr("class", "yaxis")
+              .call(yAxis);
+
+          // End bar chart code
 
       if (timer) clearInterval(timer);
       timer = setInterval(step, 0);
