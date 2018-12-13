@@ -36,6 +36,10 @@
           console.log(data);
 
           // Bar chart code
+          var svg = d3.select("#barchart");
+
+          svg.select("svg").remove();
+
           var maxValue = Object.values(data)[0].value;
           // console.log(maxValue);
 
@@ -60,7 +64,7 @@
               .orient("left")
               .ticks(10);
 
-          var svg = d3.select("#barchart").append("svg")
+          svg = d3.select("#barchart").append("svg")
               .attr("width", width + margin.left + margin.right)
               .attr("height", height + margin.top + margin.bottom)
               .append("g")
